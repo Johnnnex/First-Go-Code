@@ -1,0 +1,143 @@
+{
+	"address": "2LnQChqZcx8NKpNn3L5SmPmtz4tt6B2Wo31bY25sgRGs",
+	"metadata": {
+		"name": "token_faucet",
+		"version": "0.1.0",
+		"spec": "0.1.0",
+		"description": "Created with Anchor"
+	},
+	"instructions": [
+		{
+			"name": "initialize_faucet_pda",
+			"discriminator": [90, 58, 165, 54, 227, 86, 35, 154],
+			"accounts": [
+				{
+					"name": "faucet_pda",
+					"writable": true,
+					"pda": {
+						"seeds": [
+							{
+								"kind": "const",
+								"value": [102, 97, 117, 99, 101, 116, 95, 112, 100, 97]
+							}
+						]
+					}
+				},
+				{ "name": "signer", "writable": true, "signer": true },
+				{ "name": "system_program", "address": "11111111111111111111111111111111" }
+			],
+			"args": []
+		},
+		{
+			"name": "initialize_recipient_pda",
+			"discriminator": [208, 145, 190, 65, 57, 175, 103, 58],
+			"accounts": [
+				{
+					"name": "recipient_pda",
+					"writable": true,
+					"pda": {
+						"seeds": [
+							{
+								"kind": "const",
+								"value": [114, 101, 99, 105, 112, 105, 101, 110, 116, 95, 112, 100, 97]
+							},
+							{ "kind": "account", "path": "recipient" }
+						]
+					}
+				},
+				{ "name": "signer", "writable": true, "signer": true },
+				{ "name": "recipient", "writable": true },
+				{ "name": "system_program", "address": "11111111111111111111111111111111" }
+			],
+			"args": []
+		},
+		{
+			"name": "transfer_sol",
+			"discriminator": [78, 10, 236, 247, 109, 117, 21, 76],
+			"accounts": [
+				{ "name": "faucet_account", "writable": true },
+				{
+					"name": "faucet_pda",
+					"writable": true,
+					"pda": {
+						"seeds": [
+							{
+								"kind": "const",
+								"value": [102, 97, 117, 99, 101, 116, 95, 112, 100, 97]
+							}
+						]
+					}
+				},
+				{
+					"name": "recipient_pda",
+					"writable": true,
+					"pda": {
+						"seeds": [
+							{
+								"kind": "const",
+								"value": [114, 101, 99, 105, 112, 105, 101, 110, 116, 95, 112, 100, 97]
+							},
+							{ "kind": "account", "path": "recipient" }
+						]
+					}
+				},
+				{ "name": "recipient", "writable": true },
+				{ "name": "signer", "writable": true, "signer": true },
+				{ "name": "system_program", "address": "11111111111111111111111111111111" }
+			],
+			"args": [{ "name": "amount", "type": "u64" }]
+		}
+	],
+	"accounts": [
+		{
+			"name": "FaucetPDA",
+			"discriminator": [62, 251, 88, 114, 204, 192, 33, 226]
+		},
+		{
+			"name": "RecipientPDA",
+			"discriminator": [168, 18, 128, 251, 37, 206, 223, 163]
+		}
+	],
+	"errors": [
+		{
+			"code": 6000,
+			"name": "FaucetInactive",
+			"msg": "The faucet is currently inactive"
+		},
+		{
+			"code": 6001,
+			"name": "AmountExceedsDistributionLimit",
+			"msg": "The requested amount exceeds the distribution limit."
+		},
+		{
+			"code": 6002,
+			"name": "CooldownTimeNotOver",
+			"msg": "Cooldown time not over"
+		}
+	],
+	"types": [
+		{
+			"name": "FaucetPDA",
+			"type": {
+				"kind": "struct",
+				"fields": [
+					{ "name": "max_distribution_amount", "type": "u64" },
+					{ "name": "cooldown_time", "type": "u64" },
+					{ "name": "last_request_time", "type": "u64" },
+					{ "name": "total_dispensed", "type": "u64" },
+					{ "name": "is_active", "type": "bool" }
+				]
+			}
+		},
+		{
+			"name": "RecipientPDA",
+			"type": {
+				"kind": "struct",
+				"fields": [
+					{ "name": "last_request_time", "type": "u64" },
+					{ "name": "total_dispensed", "type": "u64" }
+				]
+			}
+		}
+	]
+}
